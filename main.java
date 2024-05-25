@@ -10,6 +10,8 @@ class Main{
         System.out.println("Enter yellows (order doesn't matter):\n"); //Just input of 0-5 letters
         String Yellows = InputScanner.nextLine();
         InputScanner.close();
-        
+        if (Greens.length() != 5 || Yellows.length() > 5){
+            
+        }
     }
 }
