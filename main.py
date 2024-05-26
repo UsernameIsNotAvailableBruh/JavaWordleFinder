@@ -1,3 +1,5 @@
+#Used to get the WordList
+
 import requests
 
 URL = "https://raw.githubusercontent.com/tabatkins/wordle-list/main/words"
