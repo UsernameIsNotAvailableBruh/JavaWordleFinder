@@ -1,10 +1,12 @@
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 class Main{
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, IOException {
         Scanner InputScanner = new Scanner(System.in);
         System.out.println("Enter green (if any) (Use underscores (_) for unknown):"); //_____
         String Greens = InputScanner.nextLine();
@@ -45,6 +47,23 @@ class Main{
                 }
             }
         }
-        System.out.println(PossibleWords);
+        
+        File OutputFile = new File("JavaWordleFinder/Output.txt");
+        if (OutputFile.createNewFile()){
+            System.out.println("\nCreated Output.txt file.");
+        }
+        else {
+            System.out.println("\nUsing existing Output.txt file.");
+        }
+        FileWriter OutputWriter = new FileWriter(OutputFile);
+        System.err.println("The possible Words are:");
+        for (String Words : PossibleWords){
+            System.out.println(Words);
+            OutputWriter.write(Words);
+            OutputWriter.write("\n");
+        }
+        OutputWriter.close();
+        System.out.println("This list of words is also saved to Output.txt");
+
     }
 }
