@@ -8,22 +8,31 @@ import java.util.ArrayList;
 class Main{
     public static void main(String[] args) throws FileNotFoundException, IOException {
         Scanner InputScanner = new Scanner(System.in);
-        System.out.println("Enter green (if any) (Use underscores (_) for unknown):"); //_____
+        System.out.println("Enter green (if any) (Use special characters for unknown):"); //_____
         String Greens = InputScanner.nextLine();
-        System.out.println("Enter yellows (order doesn't matter):"); //Just input of 0-5 letters
+        System.out.println("Enter yellows (order matters, use special characters):");
         String Yellows = InputScanner.nextLine();
-        while (Greens.length() != 5 || Yellows.length() > 5){
+        System.out.println("Enter grays (order doesn't matter, no need for specials):"); //Just input of 0-5 letters
+        String Grays = InputScanner.nextLine();
+        Boolean NoGreens = Greens.length() == 0;
+        Boolean NoYellows = Yellows.length() == 0;
+        while ((Greens.length() != 5 && !NoGreens) || (Yellows.length() != 5 && !NoYellows)){
             System.err.println("You entered something incorrectly!");
-            System.out.println("Enter green (if any) (Use underscores (_) for unknown):"); //_____
+            System.out.println("Enter green (if any) (Use special characters for unknown):"); //_____
             Greens = InputScanner.nextLine();
-            System.out.println("Enter yellows (order doesn't matter):");
+            System.out.println("Enter yellows (order matters, use special characters):");
             Yellows = InputScanner.nextLine();
+            System.out.println("Enter grays (order doesn't matter, no need for specials):"); //Just input of 0-5 letters
+            Grays = InputScanner.nextLine();
         }
         InputScanner.close();
         Yellows = Yellows.toLowerCase();
         Greens = Greens.toLowerCase();
+        Grays = Grays.toLowerCase();
+        if (NoGreens) Greens = "-----";
+        if (NoYellows) Yellows = "-----";
         //Create WordList from WordList.txt
-        Scanner WordListScanner = new Scanner(new File("JavaWordleFinder/WordList.txt"));
+        Scanner WordListScanner = new Scanner(new File("WordList.txt"));
         ArrayList<String> WordList = new ArrayList<String>();
         while (WordListScanner.hasNext()){
             WordList.add(WordListScanner.next());
@@ -32,23 +41,38 @@ class Main{
         ArrayList<String> PossibleWords = new ArrayList<String>(WordList);
         //code for greens:
         for (String Word : WordList) {//nested for loops
-            Word = Word.toLowerCase();
+            Word = Word.toLowerCase(); //just in case
             for (int i=0; i<5; i++) {//1<5 because Greens should be length of 5
-                if (Greens.charAt(i) != Word.charAt(i) && Greens.charAt(i) != '_'){
+                if (IsNonLetter(Greens.charAt(i))){ //if greens[i] is not a letter
+                    continue;
+                }
+                if (Greens.charAt(i) != Word.charAt(i)){ //not same letter
                     PossibleWords.remove(Word);
                 }
             }
         }
-        //code for yellows
+        //code for yellows:
         for (String Word : new ArrayList<String>(PossibleWords)) {//nested for loops
             for (int i=0; i<Yellows.length(); i++) {
-                if (Word.indexOf(Yellows.charAt(i)) == -1){
+                if (IsNonLetter(Yellows.charAt(i))){ //if yellows[i] is not a letter
+                    continue;
+                }
+                else if (Word.indexOf(Yellows.charAt(i)) == -1 || Yellows.charAt(i) == Word.charAt(i)){ //(yellow[i] is only letters) - If Word doesnt have yellow[i] OR yellows
                     PossibleWords.remove(Word);
                 }
             }
         }
-        
-        File OutputFile = new File("JavaWordleFinder/Output.txt");
+        //code for grays:
+        for (String Word : new ArrayList<String>(PossibleWords)){
+            for (int x=0; x<Grays.length(); x++){
+                for (int y=0; y<Word.length(); y++){
+                    if (Grays.charAt(x) == Word.charAt(y)){
+                        PossibleWords.remove(Word);
+                    }
+                }
+            }
+        }
+        File OutputFile = new File("Output.txt");
         if (OutputFile.createNewFile()){
             System.out.println("\nCreated Output.txt file.");
         }
@@ -56,7 +80,7 @@ class Main{
             System.out.println("\nUsing existing Output.txt file.");
         }
         FileWriter OutputWriter = new FileWriter(OutputFile);
-        System.err.println("The possible Words are:");
+        System.out.println("The possible Words are:");
         for (String Words : PossibleWords){
             System.out.println(Words);
             OutputWriter.write(Words);
@@ -64,6 +88,14 @@ class Main{
         }
         OutputWriter.close();
         System.out.println("This list of words is also saved to Output.txt");
-
     }
-}
+    public static boolean IsNonLetter(char character){
+        String NonLetters = "~`!@#$%^&*()_+-={}|[]\\;':\"<>?,./";
+        for (int i=0;i<NonLetters.length();i++){
+            if (NonLetters.charAt(i) == character){
+                return true;
+            }
+        }
+        return false;
+    }
+}    
