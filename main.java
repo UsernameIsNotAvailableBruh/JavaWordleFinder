@@ -8,21 +8,21 @@ import java.util.ArrayList;
 class Main{
     public static void main(String[] args) throws FileNotFoundException, IOException {
         Scanner InputScanner = new Scanner(System.in);
-        System.out.println("Enter green (if any) (Use special characters for unknown):"); //_____
+        System.out.println("Enter green (if any) (Use special characters for unknown):"); //input of 5 characters
         String Greens = InputScanner.nextLine();
-        System.out.println("Enter yellows (order matters, use special characters):");
+        System.out.println("Enter yellows (order matters, use special characters):"); //input of 5 characters
         String Yellows = InputScanner.nextLine();
-        System.out.println("Enter grays (order doesn't matter, no need for specials):"); //Just input of 0-5 letters
+        System.out.println("Enter grays (order doesn't matter, no need for specials):"); //input of 1 or more characters
         String Grays = InputScanner.nextLine();
         Boolean NoGreens = Greens.length() == 0;
         Boolean NoYellows = Yellows.length() == 0;
-        while ((Greens.length() != 5 && !NoGreens) || (Yellows.length() != 5 && !NoYellows)){
+        while ((Greens.length() != 5 && !NoGreens) || (Yellows.length() != 5 && !NoYellows)){ //not 5 and not 0
             System.err.println("You entered something incorrectly!");
-            System.out.println("Enter green (if any) (Use special characters for unknown):"); //_____
+            System.out.println("Enter green (if any) (Use special characters for unknown):");
             Greens = InputScanner.nextLine();
             System.out.println("Enter yellows (order matters, use special characters):");
             Yellows = InputScanner.nextLine();
-            System.out.println("Enter grays (order doesn't matter, no need for specials):"); //Just input of 0-5 letters
+            System.out.println("Enter grays (order doesn't matter, no need for specials):");
             Grays = InputScanner.nextLine();
         }
         InputScanner.close();
@@ -31,7 +31,7 @@ class Main{
         Grays = Grays.toLowerCase();
         if (NoGreens) Greens = "-----";
         if (NoYellows) Yellows = "-----";
-        //Create WordList from WordList.txt
+        //Create WordList from WordList.txt:
         Scanner WordListScanner = new Scanner(new File("WordList.txt"));
         ArrayList<String> WordList = new ArrayList<String>();
         while (WordListScanner.hasNext()){
@@ -41,8 +41,8 @@ class Main{
         ArrayList<String> PossibleWords = new ArrayList<String>(WordList);
         //code for greens:
         for (String Word : WordList) {//nested for loops
-            Word = Word.toLowerCase(); //just in case
-            for (int i=0; i<5; i++) {//1<5 because Greens should be length of 5
+            Word = Word.toLowerCase(); //Word should already be lowercase, but just in case
+            for (int i=0; i<5; i++) {//i<5 because Greens should be length of 5
                 if (IsNonLetter(Greens.charAt(i))){ //if greens[i] is not a letter
                     continue;
                 }
@@ -52,7 +52,7 @@ class Main{
             }
         }
         //code for yellows:
-        for (String Word : new ArrayList<String>(PossibleWords)) {//nested for loops
+        for (String Word : new ArrayList<String>(PossibleWords)) {
             for (int i=0; i<Yellows.length(); i++) {
                 if (IsNonLetter(Yellows.charAt(i))){ //if yellows[i] is not a letter
                     continue;
@@ -60,8 +60,12 @@ class Main{
                 else if (Word.indexOf(Yellows.charAt(i)) == -1 || Yellows.charAt(i) == Word.charAt(i)){ //(yellow[i] is only letters) - If Word doesnt have yellow[i] OR yellows
                     PossibleWords.remove(Word);
                 }
+                else if (CharCount(Word, Yellows.charAt(i)) <  CharCount(Yellows, Yellows.charAt(i))){ // dounble (or more) and word has less than yellows
+                    PossibleWords.remove(Word);
+                }
             }
         }
+        //for doubles (or more)
         //code for grays:
         for (String Word : new ArrayList<String>(PossibleWords)){
             for (int x=0; x<Grays.length(); x++){
@@ -97,5 +101,13 @@ class Main{
             }
         }
         return false;
+    }
+
+    public static int CharCount(String string, char character) {
+        int count = 0;
+        for (int i=0;i<string.length();i++){
+            if (string.charAt(i) == character) count++;
+        }
+        return count;
     }
 }    
