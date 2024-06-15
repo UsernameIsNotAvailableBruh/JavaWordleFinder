@@ -53,21 +53,22 @@ class Main{
         }
         //code for yellows:
         for (String Word : new ArrayList<String>(PossibleWords)) {
+            Word = Word.toLowerCase();
             for (int i=0; i<Yellows.length(); i++) {
                 if (IsNonLetter(Yellows.charAt(i))){ //if yellows[i] is not a letter
                     continue;
                 }
-                else if (Word.indexOf(Yellows.charAt(i)) == -1 || Yellows.charAt(i) == Word.charAt(i)){ //(yellow[i] is only letters) - If Word doesnt have yellow[i] OR yellows
+                else if (Word.indexOf(Yellows.charAt(i)) == -1 || Yellows.charAt(i) == Word.charAt(i)){ //(yellow[i] is only letters) - If Word doesnt have yellow[i] OR yellows[i] == word[i]
                     PossibleWords.remove(Word);
                 }
-                else if (CharCount(Word, Yellows.charAt(i)) <  CharCount(Yellows, Yellows.charAt(i))){ // dounble (or more) and word has less than yellows
+                else if (CharCount(Word, Yellows.charAt(i)) <  CharCount(Yellows, Yellows.charAt(i))){ // Word has less yellow[i] than yellow has yellow[i]
                     PossibleWords.remove(Word);
                 }
             }
         }
-        //for doubles (or more)
         //code for grays:
         for (String Word : new ArrayList<String>(PossibleWords)){
+            Word = Word.toLowerCase();
             for (int x=0; x<Grays.length(); x++){
                 for (int y=0; y<Word.length(); y++){
                     if (Grays.charAt(x) == Word.charAt(y)){
